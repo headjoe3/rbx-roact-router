@@ -10,7 +10,7 @@ Roact (TypeScript): https://github.com/roblox-ts/rbx-roact
 Run the command `npm install rbx-roact-router` in your project workspace
 
 ## Documentation:
-Exported elements are documented here: https://github.com/headjoe3/rbx-roact-router/wiki
+All of the module's exports are documented here: https://github.com/headjoe3/rbx-roact-router/wiki
 
 ## Example (tsx)
 ```jsx
