@@ -19,6 +19,10 @@ import * as RoactRouter from "rbx-roact-router";
 
 import { Router, Switch, Route, Redirect } from "rbx-roact-router";
 
+const css_ambient = {
+    BackgroundTransparency: 1,
+    Size: new UDim2(1, 0, 1, 0),
+}
 const css_centered = {
     Position: new UDim2(0.5, 0, 0.5, 0),
     AnchorPoint: new Vector2(0.5, 0.5),
@@ -71,10 +75,16 @@ const MainGui = (
                     <textlabel {...css_solid_white} {...css_centered} {...css_black_text} Text="Menu 1; redirecting in 2 seconds..." Size={new UDim2(0, 300, 0, 80)}/>
                 )}/>
                 <Route priority = {2} Key="Menu2" path="/menu2" render={(props) => (
-                    <Redirect to="/nowhere"/>
+                    <frame {...css_ambient}>
+                        <textlabel {...css_solid_white} {...css_centered} {...css_black_text} Text="Menu 2; redirecting in 1 seconds..." Size={new UDim2(0, 300, 0, 80)}/>
+                        <Redirect to="/nowhere" delay={1}/>
+                    </frame>
                 )}/>
                 <Route priority = {100} Key="Default Redirect" path="/" render={(props) => (
-                    <Redirect to="/home"/>
+                    <frame {...css_ambient}>
+                        <textlabel {...css_solid_white} {...css_centered} {...css_black_text} Text="" Size={new UDim2(0, 300, 0, 400)}/>
+                        <Redirect to="/home"/>
+                    </frame>
                 )}/>
             </Switch>
         </Router>
@@ -89,4 +99,4 @@ Roact.mount(
 
 export = () => {}
 ```
-![TSX Example](https://i.imgur.com/GixUbpq.gif)
+![TSX Example](https://i.imgur.com/ICfItZj.gif)

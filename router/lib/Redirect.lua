@@ -30,12 +30,7 @@ function Redirect:render()
             self.lastRedirectSecond = tick()
             self.redirectsThisSecond = 0
         end
-        spawn(function()
-            if (self.state.redirecting) then return end
-            self:setState({redirecting = true})
-            ContextRouter:SetURL(self.props.to)
-            self:setState({redirecting = false})
-        end)
+        ContextRouter:GetRouterProps().router.redirect(self.props.to, self.props.delay or 0.03)
 	end
 	return nil
 end

@@ -11,12 +11,23 @@ function Router:init(props)
 	self.props.children = self.props[Roact.Children]
 end
 Router.getDefaultState = function(this, props)
+	local lastRedirectTick = tick()
     return ({
         url = "/",
         routerInjectedPropsCache = {
             router = {
-				redirect = function(url)
-					this:SetURL(url)
+				redirect = function(url, delayDuration)
+					if (delayDuration) then
+						local redirectTick = tick()
+						lastRedirectTick = redirectTick
+						delay(delayDuration, function()
+							if (lastRedirectTick == redirectTick) then
+								this:SetURL(url)
+							end
+						end)
+					else
+						this:SetURL(url)
+					end
                 end,
                 location = props.url,
             },

@@ -93,7 +93,9 @@ interface RouteState {
 
 interface RedirectProps extends PropsBase {
     /** The URL to redirect to when this component is rendered */
-    to: string
+	to: string
+	/** The amount of time to delay before redirecting */
+	delay?: number
 }
 interface RedirectState extends PropsBase {
     /** True iff the redirect has been rendered and redirected the URL once */
@@ -134,8 +136,11 @@ declare namespace RoactRouter {
 	interface RouterInjectedProps {
 		/** Information and helper functions related to the router */
 		router: {
-			/** Changes the display path for the router */
-			redirect: (url: string) => void
+			/** Changes the display path for the router
+			 * @params url The path to redirect to
+			 * @params delayDuration (optional) If provided, the router will spawn a thread that redirects after a certain period of time (if the redirect is not overridden)
+			 */
+			redirect: (url: string, delayDuration?: number) => void
 			/** The current URL path of the router */
 			location: string
 		}
