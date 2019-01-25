@@ -1,19 +1,14 @@
 local Core = require(script.Core)
-local applyMod = require(script.applyMod)
 local util = require(script.util)
-
--- Apply Roact Freeze mod
-applyMod()
 
 local Router = require(script.Router)
 local Switch = require(script.Switch)
 local Route = require(script.Route)
 local Redirect = require(script.Redirect)
+local RouteCache = require(script.RouteCache)
 
 local withRouter = require(script.withRouter)
 
-local freezeElement = require(script.freezeElement)
-local thawElement = require(script.thawElement)
 local getRouter = require(script.getRouter)
 local getSwitch = require(script.getSwitch)
 
@@ -23,13 +18,12 @@ return {
     Switch = Switch,
     Route = Route,
     Redirect = Redirect,
+    RouteCache = RouteCache,
 
     -- Higher-order functions
     withRouter = withRouter,
 
     -- Util functions
-    freezeElement = freezeElement,
-    thawElement = thawElement,
     getRouter = getRouter,
     getSwitch = getSwitch,
 

@@ -1,16 +1,13 @@
 local RoactModule = game:GetService("ReplicatedStorage"):FindFirstChild("rbx-roact", true)
 local Roact = require(RoactModule.roact.lib)
+local RouteCache = require(script.Parent.RouteCache)
 local Core = require(script.Parent.Core)
 local util = require(script.Parent.util)
 local css = require(script.Parent.css)
-local freezeElement = require(script.Parent.freezeElement)
-local thawElement = require(script.Parent.thawElement)
 
 local Route = Roact.Component:extend("Route")
 function Route:init(props)
-	self.lastRenderedCache = (Roact.createElement("Frame",
-		util.join(css.ambient)
-	))
+	self.lastRenderedCache = nil
     local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)
     if ContextRouter then
         self.routeComponentProps = ContextRouter:GetRouterProps()
@@ -111,6 +108,12 @@ function Route:GetRouteParams(url)
 	end
 end
 function Route:SetOverrideActive(isActive)
+	-- To ensure the smoothest transition, make sure to thaw the cache just before all other routes have closed
+	if (isActive) then
+		if self.lastRenderedCache and self.lastRenderedCache.props._component.active == false then
+			self.lastRenderedCache.props._component:Thaw()
+		end
+	end
 	self.overrideActive = isActive
 end
 function Route:GetOverrideActive()
@@ -149,27 +152,29 @@ function Route:render()
 		end
 		local activeElement = (self.props.render and self.staticComponent or Roact.createElement(self.props.component, self.routeComponentProps))
 		if isCaching then
-			if self.lastRenderedCache.props[Core.Freeze] then
-				thawElement(self.lastRenderedCache)
+			if self.lastRenderedCache and self.lastRenderedCache.props._component.active == false then
+				self.lastRenderedCache.props._component:Thaw()
 			end
-			self.lastRenderedCache = activeElement
-			activeElement = Roact.createElement("Frame", util.join(css.ambient, {
-				Visible = true,
+			local cache = Roact.createElement(RouteCache, util.join(css.ambient, {
+				active = true,
 			}), {
 				Cache = activeElement,
 			})
+			self.lastRenderedCache = cache
+			return cache
 		end
 		return activeElement
 	else
 		if isCaching then
-			if not self.lastRenderedCache.props[Core.Freeze] then
-				freezeElement(self.lastRenderedCache)
+			if self.lastRenderedCache and self.lastRenderedCache.props._component.active == true then
+				self.lastRenderedCache.props._component:Freeze()
 			end
-			return Roact.createElement("Frame", util.join(css.ambient, {
-				Visible = false,
-			}), {
-				Cache = self.lastRenderedCache,
-			})
+			return self.lastRenderedCache or (Roact.createElement("Frame", 
+				util.join({
+					Visible = false,
+				},
+				css.ambient)
+			))
 		end
 		return (Roact.createElement("Frame", 
 			util.join({

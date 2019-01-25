@@ -152,11 +152,6 @@ declare function GetComponentFromContext<T extends Roact.Component = Roact.Compo
 /** Renders the component as a portal that simply passes its children through the component's parent */
 declare function PassThroughComponent(thisComponent: Roact.Component<any, any>, props: PropsBase): Roact.Element
 
-/** Recursively freezes an element so that it cannot be reconciled */
-declare function FreezeElement(element: Roact.Element): void
-/** Recursively removes the "Core.Freeze" tag on an element */
-declare function ThawElement(element: Roact.Element): void
-
 
 
 // Exported namespace
@@ -254,6 +249,22 @@ declare namespace RoactRouter {
 
 
 
+	// RouteCache class component
+
+
+
+	/** Internally created component that caches inactive routes when nested inside of a Router that enables caching */
+	class RouteCache extends Roact.Component<PropsBase> {
+		constructor(props: PropsBase)
+		/** Called when the route is no longer active, and the cache should be set invisible */
+		Freeze(): void
+		/** Called when the route is active again, and the cache should be set visible */
+		Thaw(): void
+		render(): Roact.Element | undefined
+	}
+
+
+
 	// Higher-order functional components
 
 
@@ -269,10 +280,6 @@ declare namespace RoactRouter {
 	
 
 
-	/** Recursively prevents the reconciler from reconciling an element */
-    function freezeElement(): void
-	/** Allows an frozen element (set via RoactRouter.freezeElement) to be reconciled again */
-    function thawElement(): void
 	/** Returns the router that a component is nested in */
 	function getRouter(component: Roact.Component): Router | undefined
 	/** Returns the switch that a component is nested in */
@@ -284,15 +291,11 @@ declare namespace RoactRouter {
 
 
 
-	/** Element props marker for the "Freeze" mod that freezes the reconciler */
-	type Freeze = true
 	/** Context marker that tells elements what Router they are nested in */
 	type ContextRouter = Router
 	/** Context marker that tells elements what Switch they are nested in */
 	type ContextSwitch = Switch
 
-	/** Element props marker for the "Freeze" mod that freezes the reconciler */
-    const Freeze: unique symbol
 	/** Context marker that tells elements what Router they are nested in */
     const ContextRouter: unique symbol
 	/** Context marker that tells elements what Switch they are nested in */

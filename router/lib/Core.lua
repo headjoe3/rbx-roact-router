@@ -7,9 +7,6 @@ local Symbol = require(RoactModule.roact.lib.Symbol)
 
 local Core = {}
 
--- Marker to freeze the reconciler on an element
-Core.Freeze = Symbol.named("Freeze")
-
 -- Context marker for routers
 Core.ContextRouter = Symbol.named("ContextRouter")
 

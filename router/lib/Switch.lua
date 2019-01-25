@@ -33,17 +33,27 @@ function Switch:render()
 	local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)
 	local activeURL = ContextRouter and ContextRouter:GetURL()
 	local foundRoute = false
+	local toSetInactive = {}
+	local toSetActive
 	for _,route in pairs(self.state.routes) do
 		if not foundRoute and activeURL and route:PathMatchesURL(activeURL) then
 			foundRoute = true
 			if route:GetOverrideActive() ~= true then
-				route:SetOverrideActive(true)
+				toSetActive = route
 			end
 		else
 			if route:GetOverrideActive() ~= false then
-				route:SetOverrideActive(false)
+				table.insert(toSetInactive, route)
 			end
 		end
+	end
+	-- Set active route visible first to ensure a seemless transition (this is followed up with a cache thaw)
+	if (toSetActive) then
+		toSetActive:SetOverrideActive(true)
+	end
+	-- Set inactive routes invisible after the active cache has been thawed
+	for _,route in pairs(toSetInactive) do
+		route:SetOverrideActive(false)
 	end
 	return util.PassThroughComponent(self, self.props)
 end
