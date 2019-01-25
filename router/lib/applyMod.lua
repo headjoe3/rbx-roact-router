@@ -2,8 +2,8 @@ local RoactModule = game:GetService("ReplicatedStorage"):FindFirstChild("rbx-roa
 local Reconciler = require(RoactModule.roact.lib.Reconciler)
 local Core = require(script.parent.Core);
 
+-- Mods Roact to freeze the ceconciler when "RoactRouter.Freeze" is encountered
 local function applyMod()
-    -- MOD: Freeze when "Core.Freeze" is encountered!
     local _reconcileInternal_original = Reconciler._reconcileInternal
     Reconciler._reconcileInternal = function(instance, element, ...)
         if (element and element.props[Core.Freeze]) then
@@ -13,4 +13,4 @@ local function applyMod()
     end
 end
 
-return applyMod()
+return applyMod

@@ -1,6 +1,6 @@
 {
   "name": "rbx-roact-router",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Routing components for TypeScript Roact",
   "main": "./router/lib/init.lua",
   "scripts": {
