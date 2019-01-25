@@ -1,18 +1,18 @@
-## rbx-roact-router
+# rbx-roact-router
 TypeScript-compatible routing components for Roact
 
-# Requirements:
+## Requirements:
 Roblox-TS: https://roblox-ts.github.io/
 
 Roact (TypeScript): https://github.com/roblox-ts/rbx-roact
 
-# Installation
+## Installation
 Run the command `npm install rbx-roact-router` in your project workspace
 
-# Documentation:
+## Documentation:
 Exported elements are documented here: https://github.com/headjoe3/rbx-roact-router/wiki
 
-# Example (tsx)
+## Example (tsx)
 ```jsx
 import * as Roact from "rbx-roact"
 import * as RoactRouter from "rbx-roact-router";
