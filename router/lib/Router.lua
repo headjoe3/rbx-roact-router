@@ -12,8 +12,9 @@ function Router:init(props)
 end
 Router.getDefaultState = function(this, props)
 	local lastRedirectTick = tick()
+	local rootURL = props.root or '/'
     return ({
-        url = "/",
+        url = rootURL,
         routerInjectedPropsCache = {
             router = {
 				redirect = function(url, delayDuration)
@@ -29,12 +30,12 @@ Router.getDefaultState = function(this, props)
 						this:SetURL(url)
 					end
                 end,
-                location = props.url,
+                location = rootURL,
             },
             match = {
-                path = props.url,
-                url = props.url,
-                isExact = false,
+                path = rootURL,
+                url = rootURL,
+                isExact = true,
                 params = {},
             },
         },
@@ -58,7 +59,7 @@ function Router:GetIsCaching()
 	if not self.props then
 		return false
 	end
-	return self.props.caching
+	return self.props.caching and true or false
 end
 function Router:GetRouterProps()
 	return self.state.routerInjectedPropsCache

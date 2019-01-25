@@ -49,7 +49,7 @@ function Route:PathMatchesURL(url)
 	if self.props.exact then
 		return string.lower(url) == matchPath
 	else
-		return (select(1, string.find(string.lower(url), matchPath, nil, true))) ~= nil
+		return (select(1, string.find(string.lower(url), matchPath, nil, true))) == 1
 	end
 end
 function Route:GetRouteParams(url)

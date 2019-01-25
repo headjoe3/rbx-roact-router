@@ -34,17 +34,24 @@ Roact.createElement(Parent, {...}, {
 
 
 interface RouterProps extends PropsBase {
-	/** If true, route components will only mount once, and route pages will be frozen
+	/** Determines whether embedded routes should be cached
+	 * 
+	 * If true, route components will only mount once, and route pages will be frozen
 	 * in their state while they are inactive. Instances on inactive routes are left
 	 * alone with caching.
 	 */
-	caching: boolean
+	caching?: boolean
+	/** Describes the initial path for routing, as well as the starting URL.
+	 * 
+	 * The Default value is '/'
+	 */
+	root?: string
 }
 interface RouterState {
 	/** The current path being routed to. */
 	url: string
 	/** Injected props concerning information about the current route */
-	routerInjectedPropsCache: RoactRouter.RouterInjectedProps
+	routerInjectedPropsCache: RoactRouter.RouteComponentProps
 }
 
 
@@ -58,9 +65,9 @@ interface RoduxConnection<S, P> {
 }
 type RouteParameters = {[index: string]: string}
 
-type RouteClassComponent = Roact.RenderablePropsClass<RoactRouter.RouterInjectedProps>
-type RouteFunctionComponent = ((props: RoactRouter.RouterInjectedProps) => Roact.Element)
-type RouteConnectionComponent = RoduxConnection<any, RoactRouter.RouterInjectedProps>
+type RouteClassComponent = Roact.RenderablePropsClass<RoactRouter.RouteComponentProps>
+type RouteFunctionComponent = ((props: RoactRouter.RouteComponentProps) => Roact.Element)
+type RouteConnectionComponent = RoduxConnection<any, RoactRouter.RouteComponentProps>
 
 interface RouteProps_Base extends PropsBase {
     /** If true, the URL must be exactly matched (excluding sup-paths) */
@@ -102,6 +109,31 @@ interface RedirectState extends PropsBase {
     hasRedirected: boolean
 }
 
+/** Injected props for Route-wrapped or withRoute-wrapped components */
+interface RouterInjectedProps {
+	/** Information and helper functions related to the router */
+	router: {
+		/** Changes the display path for the router
+		 * @params url The path to redirect to
+		 * @params delay (optional) If provided, the router will spawn a thread that redirects after a certain period of time (if the redirect is not overridden)
+		 */
+		redirect: (url: string, delay?: number) => void
+		/** The current URL path of the router */
+		location: string
+	}
+	/** Information about how the route was matched */
+	match: {
+		/** The path pattern used to match */
+		path: string
+		/** The matched portion of the URL */
+		url: string
+		/** True iff the entire URL was matched (no trailing characters)*/
+		isExact: boolean
+		/** An object of string parameters passed in through the route*/
+		params: RouteParameters
+	}
+}
+
 
 
 // Unexposed util functions
@@ -132,30 +164,6 @@ declare function ThawElement(element: Roact.Element): void
 
 
 declare namespace RoactRouter {
-	/** Injected props for Route-wrapped or withRoute-wrapped components */
-	interface RouterInjectedProps {
-		/** Information and helper functions related to the router */
-		router: {
-			/** Changes the display path for the router
-			 * @params url The path to redirect to
-			 * @params delayDuration (optional) If provided, the router will spawn a thread that redirects after a certain period of time (if the redirect is not overridden)
-			 */
-			redirect: (url: string, delayDuration?: number) => void
-			/** The current URL path of the router */
-			location: string
-		}
-		/** Information about how the route was matched */
-		match: {
-			/** The path pattern used to match */
-			path: string
-			/** The matched portion of the URL */
-			url: string
-			/** True iff the entire URL was matched (no trailing characters)*/
-			isExact: boolean
-			/** An object of string parameters passed in through the route*/
-			params: RouteParameters
-		}
-	}
 
 
 
