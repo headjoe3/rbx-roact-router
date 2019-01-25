@@ -7,19 +7,34 @@ local Redirect = Roact.Component:extend("Redirect");
 function Redirect:init(props)
     self:setState(Redirect.getDefaultState())
     self.props.children = self.props[Roact.Children]
+    -- Markers to prevent infinite redirects
+    self.lastRedirectSecond = 0
+    self.redirectsThisSecond = 0
 end
 Redirect.getDefaultState = function()
     return ({
-        hasRedirected = false
+        redirecting = false,
     })
 end
 function Redirect:render()
+	local ContextRoute = util.GetComponentFromContext(self, Core.ContextRoute)
 	local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)
-	if ContextRouter then
+    if ContextRouter and ContextRoute and ContextRoute:GetIsActive() then
+        if (tick() - self.lastRedirectSecond < 1) then
+            if self.redirectsThisSecond > 50 then
+                warn("Infinite redirect at path", self._handle._parent:GetFullName() .. "." .. self._handle._key)
+            else
+                self.redirectsThisSecond = self.redirectsThisSecond + 1
+            end
+        else
+            self.lastRedirectSecond = tick()
+            self.redirectsThisSecond = 0
+        end
         spawn(function()
-            if (self.state.hasRedirected) then return end
-            self:setState({hasRedirected = true})
-            return ContextRouter:SetURL(self.props.to)
+            if (self.state.redirecting) then return end
+            self:setState({redirecting = true})
+            ContextRouter:SetURL(self.props.to)
+            self:setState({redirecting = false})
         end)
 	end
 	return nil

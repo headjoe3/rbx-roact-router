@@ -16,4 +16,7 @@ Core.ContextRouter = Symbol.named("ContextRouter")
 -- Context marker for switches
 Core.ContextSwitch = Symbol.named("ContextSwitch")
 
+-- Context marker for routers
+Core.ContextRoute = Symbol.named("ContextRoute")
+
 return Core

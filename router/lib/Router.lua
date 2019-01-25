@@ -15,8 +15,8 @@ Router.getDefaultState = function(this, props)
         url = "/",
         routerInjectedPropsCache = {
             router = {
-                redirect = function(url)
-                    this:SetURL(url)
+				redirect = function(url)
+					this:SetURL(url)
                 end,
                 location = props.url,
             },

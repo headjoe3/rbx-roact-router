@@ -8,6 +8,7 @@ applyMod()
 local Router = require(script.Router)
 local Switch = require(script.Switch)
 local Route = require(script.Route)
+local Redirect = require(script.Redirect)
 
 local withRouter = require(script.withRouter)
 
@@ -21,6 +22,7 @@ return {
     Router = Router,
     Switch = Switch,
     Route = Route,
+    Redirect = Redirect,
 
     -- Higher-order functions
     withRouter = withRouter,

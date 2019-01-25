@@ -17,8 +17,10 @@ function Route:init(props)
         if self.props.render then
             self.staticComponent = self.props.render(util.join(self.routeComponentProps))
         end
-    end
+	end
 	self.wasActive = false
+	-- Bind to context
+	util.BindComponentToContext(self, Core.ContextRoute)
 	self.props.children = self.props[Roact.Children]
 end
 function Route:didMount()
@@ -113,6 +115,15 @@ function Route:SetOverrideActive(isActive)
 end
 function Route:GetOverrideActive()
 	return self.overrideActive
+end
+function Route:GetIsActive()
+	local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)
+	local activeURL = ContextRouter and ContextRouter:GetURL()
+	if self.overrideActive ~= nil then
+		return self.overrideActive
+	else
+		return (activeURL and function() return self:PathMatchesURL(activeURL) end or function() return false end)()
+	end
 end
 function Route:render()
 	local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)

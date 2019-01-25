@@ -237,6 +237,8 @@ declare namespace RoactRouter {
 		render(): Roact.Element | undefined
 	}
 
+	const Test = "Test"
+
 
 
 	// Higher-order functional components
