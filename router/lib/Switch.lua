@@ -6,28 +6,26 @@ local util = require(script.Parent.util)
 
 local Switch = Roact.Component:extend("Switch")
 function Switch:init(props)
-	self:setState({
-		routes = {}
-	})
+	self.routes = {}
 	util.BindComponentToContext(self, Core.ContextSwitch)
 	self.props.children = self.props[Roact.Children]
 end
 function Switch:MountRoute(route, priority)
 	priority = priority and priority + 1
-	if priority and priority < #self.state.routes then
-		table.insert(self.state.routes, priority, route)
+	if priority and priority < #self.routes then
+		table.insert(self.routes, priority, route)
 	else
-		table.insert(self.state.routes, route)
+		table.insert(self.routes, route)
 	end
 end
 function Switch:UnmountRoute(route)
     local newRoutes = {}
-    for key, other in pairs(self.state.routes) do
+    for key, other in pairs(self.routes) do
         if (other ~= route) then
             table.insert(newRoutes, other)
         end
     end
-	self.state.routes = newRoutes
+	self.routes = newRoutes
 end
 function Switch:render()
 	local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter)
@@ -35,7 +33,7 @@ function Switch:render()
 	local foundRoute = false
 	local toSetInactive = {}
 	local toSetActive
-	for _,route in pairs(self.state.routes) do
+	for _,route in pairs(self.routes) do
 		if not foundRoute and activeURL and route:PathMatchesURL(activeURL) then
 			foundRoute = true
 			if route:GetOverrideActive() ~= true then

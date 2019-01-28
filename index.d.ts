@@ -272,7 +272,7 @@ declare namespace RoactRouter {
 	/** Wraps a component to inject router props (of type "RouteComponentProps")
 	 * @param wrappedComponent: The component to wrap. Must have props that extends RoactRouter.RouteComponentProps
 	 */
-	function withRouter(wrappedComponent: Roact.Component<RouteComponentProps, any>): RouteFunctionComponent;
+	function withRouter(wrappedComponent: Roact.RenderablePropsClass<RouteComponentProps>): () => Roact.Element;
 
 
 

@@ -4,16 +4,18 @@ local Core = require(script.Parent.Core)
 local util = require(script.Parent.util)
 
 withRouter = function(wrappedComponent)
-	return function(props)
-		local ContextRouter = util.GetComponentFromContext(wrappedComponent, Core.ContextRouter);
-		local routeProps;
+	local class = Roact.Component:extend("withRouterWrappedComponent")
+	local oldIndex = getmetatable(class).__index
+	function class:render()
+		local ContextRouter = util.GetComponentFromContext(self, Core.ContextRouter);
 		if ContextRouter then
-			routeProps = ContextRouter:GetRouterProps()
-			return Roact.createElement(wrappedComponent, util.join(props, routeProps))
+			local routeProps = ContextRouter:GetRouterProps()
+			return Roact.createElement(wrappedComponent, util.join(self.props, routeProps))
 		else
-			return Roact.createElement(wrappedComponent, util.join(props))
+			return Roact.createElement(wrappedComponent, util.join(self.props))
 		end
 	end
+	return class
 end
 
 return withRouter

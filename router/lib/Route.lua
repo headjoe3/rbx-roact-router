@@ -19,6 +19,15 @@ function Route:init(props)
 	-- Bind to context
 	util.BindComponentToContext(self, Core.ContextRoute)
 	self.props.children = self.props[Roact.Children]
+	self.cache = nil
+end
+function Route:MountCache(cache)
+	self.cache = cache
+end
+function Route:UnmountCache(cache)
+	if self.cache == cache then
+		self.cache = nil
+	end
 end
 function Route:didMount()
 	local ContextSwitch = util.GetComponentFromContext(self, Core.ContextSwitch)
@@ -110,8 +119,8 @@ end
 function Route:SetOverrideActive(isActive)
 	-- To ensure the smoothest transition, make sure to thaw the cache just before all other routes have closed
 	if (isActive) then
-		if self.lastRenderedCache and self.lastRenderedCache.props._component.active == false then
-			self.lastRenderedCache.props._component:Thaw()
+		if self.cache and self.cache.active == false then
+			self.cache:Thaw()
 		end
 	end
 	self.overrideActive = isActive
@@ -152,8 +161,8 @@ function Route:render()
 		end
 		local activeElement = (self.props.render and self.staticComponent or Roact.createElement(self.props.component, self.routeComponentProps))
 		if isCaching then
-			if self.lastRenderedCache and self.lastRenderedCache.props._component.active == false then
-				self.lastRenderedCache.props._component:Thaw()
+			if self.cache and self.cache.active == false then
+				self.cache:Thaw()
 			end
 			local cache = Roact.createElement(RouteCache, util.join(css.ambient, {
 				active = true,
@@ -166,8 +175,8 @@ function Route:render()
 		return activeElement
 	else
 		if isCaching then
-			if self.lastRenderedCache and self.lastRenderedCache.props._component.active == true then
-				self.lastRenderedCache.props._component:Freeze()
+			if self.cache and self.cache.active == true then
+				self.cache:Freeze()
 			end
 			return self.lastRenderedCache or (Roact.createElement("Frame", 
 				util.join({

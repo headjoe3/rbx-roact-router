@@ -10,9 +10,20 @@ local returnTrue = function() return true end
 local RouteCache = Roact.Component:extend("Cache");
 function RouteCache:init(props)
     self.props.children = self.props[Roact.Children]
-    self.props._component = self
     self.cacheRef = Roact.createRef()
     self.active = true
+end
+function RouteCache:didMount()
+	local ContextRoute = util.GetComponentFromContext(self, Core.ContextRoute)
+	if ContextRoute then
+		ContextRoute:MountCache(self)
+	end
+end
+function RouteCache:willUnmount()
+	local ContextRoute = util.GetComponentFromContext(self, Core.ContextRoute)
+	if ContextRoute then
+		ContextRoute:UnmountCache(self)
+	end
 end
 function RouteCache:Freeze()
     self.shouldUpdate = returnFalse

@@ -1,2 +1,5 @@
 test-examples
 tsconfig.json
+include
+modules
+node_modules
